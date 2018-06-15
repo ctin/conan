@@ -84,7 +84,7 @@ class BoostConan(ConanFile):
 
         # JOIN ALL FLAGS
         b2_flags = " ".join(flags)
-        full_command = "%s %s -j%s --abbreviate-paths -d2" % (b2_exe, b2_flags, tools.cpu_count())
+        full_command = "%s %s -j%s --abbreviate-paths -d2 cxxflags=-std=c++14" % (b2_exe, b2_flags, tools.cpu_count())
         # -d2 is to print more debug info and avoid travis timing out without output
         sources = os.path.join(self.source_folder, self.folder_name)
         full_command += ' --debug-configuration --build-dir="%s"' % self.build_folder
@@ -372,3 +372,4 @@ class BoostConan(ConanFile):
                 self.cpp_info.defines.extend(["BOOST_ALL_NO_LIB"])
         
         self.env_info.BOOST_ROOT = self.package_folder
+        print("!!!!!!!!!!!! BOOST_ROOT INITIALIZED WITH " + self.package_folder)

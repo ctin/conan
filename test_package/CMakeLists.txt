@@ -12,19 +12,12 @@ endif()
 CONAN_BASIC_SETUP()
 
 IF(NOT HEADER_ONLY)
-	if(WITH_PYTHON)
-		find_package(Boost COMPONENTS regex python REQUIRED)
-	else()
-		find_package(Boost COMPONENTS regex REQUIRED)
-	endif()
 
     include_directories(${Boost_INCLUDE_DIRS})
-    ADD_EXECUTABLE(lambda lambda.cpp)
-    ADD_EXECUTABLE(regex_exe regex.cpp)
     ADD_EXECUTABLE(test test.cpp)
-    TARGET_LINK_LIBRARIES(regex_exe ${Boost_LIBRARIES})
     MESSAGE("LIBS=> ${CONAN_LIBS}")
     TARGET_LINK_LIBRARIES(test ${CONAN_LIBS})
+    message(STATUS "!!!!!!!!!!" "WITH_PYTHON" ${WITH_PYTHON})
     if(WITH_PYTHON)
         add_library(hello_ext SHARED python.cpp)
         if(WIN32)
@@ -33,20 +26,4 @@ IF(NOT HEADER_ONLY)
             target_link_libraries(hello_ext C:/Python27/libs/python27.lib ${CONAN_LIBS})
         endif()
     endif()
-    ADD_TEST(NAME TestRegex
-             COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} "$<TARGET_FILE:regex_exe>")
-
-ELSE()
-	ADD_EXECUTABLE(lambda lambda.cpp)
-ENDIF()
-
-ADD_TEST(NAME TestLambda
-         COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} "$<TARGET_FILE:lambda>" ${TEST_ARGS})
-
-IF(NOT HEADER_ONLY)
-    # Test a different exe linking with the CONAN_LIBS to actually test the package_info
-    ADD_EXECUTABLE(newregex regex.cpp)
-    TARGET_LINK_LIBRARIES(newregex ${CONAN_LIBS})
-    ADD_TEST(NAME TestRegexNew
-             COMMAND ${CMAKE_CROSSCOMPILING_EMULATOR} "$<TARGET_FILE:newregex>" ${TEST_ARGS})
 ENDIF()
